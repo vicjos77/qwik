@@ -3,9 +3,9 @@ import {useSignal, component$, useTask$ } from "@builder.io/qwik";
 
 
 interface Props {
-    id: number;
+    id: number | string;
     size?: number;
-    backImage: boolean;
+    backImage?: boolean;
     showImage?: boolean;
 }
 
