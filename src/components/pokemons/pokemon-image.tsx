@@ -1,4 +1,4 @@
-import {useSignal, component$, useTask$ } from "@builder.io/qwik";
+import {useSignal, component$, useTask$, useComputed$ } from "@builder.io/qwik";
 
 
 
@@ -16,6 +16,7 @@ export const PokemonImage = component$(({ id, size=200, backImage, showImage}:Pr
        imageLoaded.value=false;
     })
 
+    
     let imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${ id }.png`;
     if (backImage){
      imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${ id }.png`}
