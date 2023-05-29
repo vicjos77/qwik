@@ -1,6 +1,7 @@
-import { component$, useComputed$ } from '@builder.io/qwik';
+import { component$, useComputed$, useSignal } from '@builder.io/qwik';
 import { type DocumentHead, Link, routeLoader$, useLocation } from '@builder.io/qwik-city';
 import { PokemonImage } from '~/components/pokemons/pokemon-image';
+import { Modal } from '~/components/shared';
 import { getSmallPokemons } from '~/helpers/get-small-pokemons';
 import type { SmallPokemon} from '~/interfaces';
 
@@ -14,6 +15,7 @@ return  pokemons
 })
 
 export default component$<number>(() => {
+    const modalVisible=useSignal(false);
     const pokemons=usePokemonList();
     const location = useLocation()
 
@@ -57,6 +59,15 @@ export default component$<number>(() => {
         
         
     </div>
+ <Modal showModal={modalVisible.value}>
+    <div q:slot='title'>Nombre del Pokemon</div>
+    <div class="flex flex-col justify-center items-center" q:slot='content'>
+        <PokemonImage id='1'/>
+        <span>Preguntandole a chat gpt</span>
+    </div>
+
+ </Modal>
+   
 
     </>
 )});

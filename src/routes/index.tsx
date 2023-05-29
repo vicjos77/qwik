@@ -1,34 +1,32 @@
-import { $, component$, useSignal } from '@builder.io/qwik';
+import { $, component$} from '@builder.io/qwik';
 import { type DocumentHead} from '@builder.io/qwik-city';
 import { PokemonImage } from '~/components/pokemons/pokemon-image';
 import { useNavigate } from '@builder.io/qwik-city';
+import { usePokemonGame } from '~/hooks/usePokemonGame';
   
 
 
 export default component$(() => {
   const nav = useNavigate();
-  const pokemonId = useSignal(1);
-  const showbackImage=useSignal(false);
-  const showImage=useSignal(false);
+  const {isPokemonVisible,
+         showBackImage, 
+         nextPokemon,
+         prevPokemon, 
+         pokemonId,
+         toogleVisible,
+         toogleFromBack
+         }=usePokemonGame()
 
 const gotoPokemon= $(async()=>{
   await nav(`/pokemons/${pokemonId.value}/`)
 })
 
-  const changePokemonId = $((value: number)=>{
-    if ((pokemonId.value + value)<=0) return;
-    pokemonId.value+=value;
-  })
 
-    const changeVoltear = $((value: boolean)=>{
-      showbackImage.value= !value
-      
-    })
     
   return (
     <>
     <span class="text-5xl">hola mundo</span>
-    <span class="text-9xl">{pokemonId}</span>
+    <span class="text-9xl">{pokemonId.value}</span>
 
     
     <div onClick$={()=>gotoPokemon()}>
@@ -36,18 +34,18 @@ const gotoPokemon= $(async()=>{
       <PokemonImage 
         id={(pokemonId.value)} 
         size={200} 
-        backImage={showbackImage.value} 
-        showImage={showImage.value}/>
+        backImage={showBackImage.value} 
+        showImage={isPokemonVisible.value}/>
     </div>
 
     
    
       
     <div class="mt-2">
-      <button onClick$={()=>changePokemonId(-1)} class="btn btn-primary mr-2">Anterior</button>
-      <button onClick$={()=>changePokemonId(+1)} class="btn btn-primary mr-2">Siguiente</button>
-      <button onClick$={()=>changeVoltear(showbackImage.value)} class="btn btn-primary mr-2 ">voltear</button>
-      <button onClick$={()=>showImage.value=!showImage.value} class="btn btn-primary ">Revelar</button>
+      <button onClick$={prevPokemon} class="btn btn-primary mr-2">Anterior</button>
+      <button onClick$={nextPokemon} class="btn btn-primary mr-2">Siguiente</button>
+      <button onClick$={ toogleFromBack} class="btn btn-primary mr-2 ">voltear</button>
+      <button onClick$={toogleVisible} class="btn btn-primary ">Revelar</button>
   </div>
     </>
   );
