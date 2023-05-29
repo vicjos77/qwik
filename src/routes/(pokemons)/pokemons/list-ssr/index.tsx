@@ -1,4 +1,4 @@
-import { component$, useComputed$, useSignal } from '@builder.io/qwik';
+import { $, component$, useComputed$, useSignal, useStore } from '@builder.io/qwik';
 import { type DocumentHead, Link, routeLoader$, useLocation } from '@builder.io/qwik-city';
 import { PokemonImage } from '~/components/pokemons/pokemon-image';
 import { Modal } from '~/components/shared';
@@ -16,12 +16,25 @@ return  pokemons
 
 export default component$<number>(() => {
     const modalVisible=useSignal(false);
+    const modalPokemon = useStore({
+      id: '',
+      name:'',
+    });
     const pokemons=usePokemonList();
     const location = useLocation()
 
-    const currentOffset=useComputed$(()=>{
+    const showModal=$((id: string, name: string)=>{
+        modalPokemon.id=id;
+        modalPokemon.name=name;
+        modalVisible.value=true
+  
+    })
+    const closeModal=$(()=>{
+        modalVisible.value=false
+    })
 
-        
+
+    const currentOffset=useComputed$(()=>{ 
         const offsetString=new URLSearchParams(location.url.search)
         return Number(offsetString.get('offset')|| 0);
     })
@@ -50,8 +63,10 @@ export default component$<number>(() => {
         </Link>
     </div>
     <div class="grid grid-cols-6 mt-5">
-        {pokemons.value.map(({name,id})=>(
-            <div key={ name } class="m-5  flex flex-col justify-center items-center">
+        {pokemons.value.map(({id,name})=>(
+            <div key={ name } 
+                 onClick$={()=>showModal(id,name)}
+                 class="m-5  flex flex-col justify-center items-center">
             <PokemonImage id={id}/>
             <span class="capitalize">{name}</span></div>
 
@@ -59,10 +74,15 @@ export default component$<number>(() => {
         
         
     </div>
- <Modal showModal={modalVisible.value}>
-    <div q:slot='title'>Nombre del Pokemon</div>
+ <Modal 
+    persistent 
+    size='md'
+    showModal={modalVisible.value} 
+    closeFn={closeModal}
+    >
+    <div q:slot='title'>{modalPokemon.name}</div>
     <div class="flex flex-col justify-center items-center" q:slot='content'>
-        <PokemonImage id='1'/>
+        <PokemonImage id={modalPokemon.id}/>
         <span>Preguntandole a chat gpt</span>
     </div>
 

@@ -16,6 +16,7 @@ export const PokemonImage = component$(({ id, size=200, backImage, showImage}:Pr
        imageLoaded.value=false;
     })
 
+    if (id==='') return '';
     
     let imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${ id }.png`;
     if (backImage){
